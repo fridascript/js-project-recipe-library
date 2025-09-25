@@ -1,0 +1,126 @@
+/*mobile first*/
+
+body {
+  background: #FAFBFF;
+  align-items: center;
+  margin-left: 64px;
+  margin-right: 64px;
+}
+
+h1 {
+  font-family: sans-serif;
+  font-style: bold;
+  font-size: 64px;
+  color: #0018A4;
+  margin-top: 64px;
+
+}
+
+.grid-parent {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 64px;
+}
+
+.filter-and-buttons {
+  grid-column: span 2;
+}
+
+.sorting-and-buttons {
+  grid-column: span 2;
+}
+
+h2 {
+  font-family: sans-serif;
+  font-weight: 700;
+  font-style: bold;
+  font-size: 22px;
+  color: black;
+}
+
+.filter-and-buttons button {
+  background-color: #CCFFE2;
+  color: #0018A4;
+  border: none;
+  cursor: pointer;
+  border-radius: 50px;
+  padding: 8px 16px 8px 16px;
+  gap: 10px;
+}
+
+
+.filter-and-buttons button.selected {
+  background-color: #0018A4;
+  color: white;
+}
+
+
+.sorting-and-buttons button {
+  background-color: #FFECEA;
+  color: #0018A4;
+  border: none;
+  cursor: pointer;
+  border-radius: 50px;
+  padding: 8px 16px 8px 16px;
+  gap: 10px;
+}
+
+.sorting-and-buttons button.selected {
+  background-color: #FF6589;
+  color: white;
+}
+
+.grid-card {
+  border: 1px solid #E9E9E9;
+  border-radius: 16px;
+  grid-column: span 4;
+}
+
+
+/* responsive tablet and desktop */
+@media (min-width: 667px) {
+
+  .grid-parent {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 64px;
+  }
+
+  .filter-and-buttons {
+    grid-column: span 1;
+  }
+
+  .sorting-and-buttons {
+    grid-column: span 3;
+  }
+
+  .filter-and-buttons button:hover {
+    border: 1px solid #0018A4;
+  }
+
+
+  .sorting-and-buttons button:hover {
+    border: 1px solid #0018A4;
+    background-color: #FF6589;
+    color: white;
+  }
+
+  .grid-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 2px solid #0018A4;
+    border-radius: 16px;
+    padding: 16px 16px 24px 16px;
+    gap: 16px;
+
+  }
+
+  .grid-card {
+    border: 1px solid #E9E9E9;
+    border-radius: 16px;
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+
+}
