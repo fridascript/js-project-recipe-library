@@ -11,7 +11,7 @@
     rel="stylesheet"
     href="style.css"
   >
-  <title>Test project 3</title>
+  <title>Recipe Library</title>
 </head>
 
 <body>
@@ -20,39 +20,52 @@
   <div class="header">
     <h1>Recipe Library</h1>
   </div>
+
   <section class="grid-parent">
 
 
     <div class="filter-and-buttons">
       <h2> Filter on kitchen </h2>
       <button> All </button>
-      <button> Italy </button>
-      <button> USA </button>
-      <button> China </button>
+      <button> Italian </button>
+      <button> American </button>
+      <button> Chinese </button>
+
     </div>
 
     <div class="sorting-and-buttons">
       <h2> Sort on time</h2>
-      <button> Descending </button>
-      <button> Ascending </button>
+      <button> Quick meals </button>
+      <button> Slow cook's </button>
     </div>
 
-    <div class=grid-card>
-      1 place holder
+    <div class="preferences">
+      <h2> Preferences </h2>
+      <button onclick="toggleDropdown()"> Choose here</button>
+      <div
+        id="dropdownMenu"
+        class="preferences-content"
+      >
+        <a href="#">Gluten Free</a>
+        <a href="#">Vegetarian</a>
+        <a href="#"> Vegan</a>
+      </div>
+
     </div>
-    <div class=grid-card>
-      2 place holder
+
+
+    <div class="random-button">
+      <h2> Surprise me!</h2>
+      <button> Random </button>
     </div>
-    <div class=grid-card>
-      3 place holder
-    </div>
-    <div class=grid-card>
-      4 place holder
-    </div>
+
+
+
 
   </section>
 
-
+  <section id=recipe-card>
+  </section>
 
   <script src="script.js"></script>
 </body>
