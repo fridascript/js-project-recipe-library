@@ -101,7 +101,7 @@ h2 {
   border-radius: 20px;
 }
 
-.preferences-content a {
+.preferences-content option {
   padding: 10px 16px;
   display: block;
   text-decoration: none;
@@ -126,7 +126,6 @@ h2 {
   width: 200px;
   height: auto;
   display: inline-block;
-  /* vertical-align: text-top; */
   border-radius: 16px;
   border: 1px solid #E9E9E9;
   padding: 5px;
@@ -202,8 +201,9 @@ h2 {
     border: 1px solid #FF6589;
   }
 
-  .preferences-content a:hover {
+  .preferences-content option:hover {
     background-color: #FF6589;
+    cursor: pointer;
   }
 
   /*random button*/
