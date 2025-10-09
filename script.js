@@ -72,7 +72,7 @@ const fetchData = () => {
       if (error.message === "API limit reached 😑") {
         // backup, loading from local storage
         if (!loadFromLocalStorage()) {
-          recipeCard.innerHTML = '<p class="error">API quota reached and no saved recipes found.. Please try again tomorrow 🫡.</p>'
+          recipeCard.innerHTML = '<p class="error">API quota reached and no saved recipes found.. Please try again tomorrow 🫡</p>'
         }
       } else {
         // something else went wrong 
