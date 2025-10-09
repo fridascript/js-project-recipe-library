@@ -1,31 +1,31 @@
-// Elements
+//  ------ Elements  ------ //
 const buttonGroups = document.querySelectorAll(".filter-and-buttons, .sorting-and-buttons, .random-button")
 const recipeCard = document.getElementById('recipe-card')
 const filterButtons = document.querySelectorAll(".filter-and-buttons button")
 const sortButtons = document.querySelectorAll(".sorting-and-buttons button")
 const randomButton = document.querySelector(".random-button button")
-const preferenceOptions = document.querySelectorAll("#dropdownMenu option")
+const preferenceOptions = document.querySelectorAll("#dropdownMenu div")
 
-// API key & URL
+//  ------ API key & URL  ------ //
 const apiKey = '0cc881e89fc0422eac77c85260da365d'
-const URL = `https://api.spoonacular.com/recipes/random?number=12&apiKey=${apiKey}`
+const URL = `https://api.spoonacular.com/recipes/random?number=10&apiKey=${apiKey}`
 
-// Global data holders
+//  ------ Global variables  ------ //
 let allMeals = []
 let currentPreference = ""
 
 
-// Button visual selection
+//  ------ Buttons  ------ //
 buttonGroups.forEach(group => {
   group.addEventListener("click", e => {
-    if (e.target.tagName !== "BUTTON") return
+    if (e.target.tagName !== "BUTTON") return // to avoid accidental clicks
     group.querySelectorAll("button").forEach(b => b.classList.remove("selected"))
     e.target.classList.add("selected")
   })
 })
 
 
-// Data from localStorage
+//  ------ Data from localStorage as backup if API fails ------ //
 function loadFromLocalStorage() {
   const storedRecipes = localStorage.getItem("recipes")
   if (storedRecipes) {
@@ -40,29 +40,50 @@ function loadFromLocalStorage() {
 }
 
 
-// Fetch data from Spoonacular API
+// ----Fetch data from Spoonacular API + local storage + error messages--- // 
+
 const fetchData = () => {
-  fetch(URL)
-    .then(response => response.json())
+  //message when loading recipes
+  recipeCard.innerHTML = '<p class="loading">Loading recipes...</p>'
+
+  return fetch(URL)
+    .then(response => {
+      if (response.status === 402) {
+        //error message if api-limit reached
+        throw new Error("API limit reached 😑")
+      }
+
+      return response.json()
+    })
+
     .then(data => {
       allMeals = data.recipes
       console.log("Fetched recipes:", allMeals)
 
-      // Save recipes to localStorage
+      // saves recipes to localStorage for backup
       localStorage.setItem("recipes", JSON.stringify(allMeals))
 
-      // Filter and display
+      // filter preferences 
       const filtered = filterByPreference(allMeals)
       renderMeals(filtered)
     })
+    // error control + messages
     .catch(error => {
       console.error('Error fetching recipes:', error)
-      recipeCard.innerHTML = '<p class="error">No recipes found. Please try again.</p>'
+
+      if (error.message === "API limit reached 😑") {
+        // backup, loading from local storage
+        if (!loadFromLocalStorage()) {
+          recipeCard.innerHTML = '<p class="error">API quota reached and no saved recipes found. Please try again tomorrow 🫡.</p>'
+        }
+      } else {
+        // something else went wrong 
+        recipeCard.innerHTML = '<p class="error"> Something went wrong- please try again 🫣</p>'
+      }
     })
 }
 
-
-// Filter recipes on diet/ preference
+// ------ Filter recipes on diet/ preference ------//
 function filterByPreference(meals) {
   if (!currentPreference || currentPreference === "all") return meals
 
@@ -72,18 +93,18 @@ function filterByPreference(meals) {
 }
 
 
-// Recipe cards
+//  ------ Recipe cards  ------ //
 function renderMeals(meals) {
   recipeCard.innerHTML = ""
 
-  if (meals.length === 0) {
-    recipeCard.innerHTML = '<p class="error">No recipes match your filters.</p>'
+  if (meals.length === 0) { //no matching recipes - message 
+    recipeCard.innerHTML = '<p class="error">No recipe match, sorry 🫣</p>'
     return
   }
 
   meals.forEach(meal => {
     const ingredients = meal.extendedIngredients
-      ? meal.extendedIngredients.slice(0, 4).map(ing => ing.name)
+      ? meal.extendedIngredients.slice(0, 5).map(ing => ing.name)
       : []
 
     const cardHTML = `
@@ -103,7 +124,7 @@ function renderMeals(meals) {
 }
 
 
-// Filter by kitchen/cuisine
+//  ------ Filter by kitchen/cuisine  ------ //
 filterButtons.forEach(button => {
   button.addEventListener("click", () => {
     filterButtons.forEach(b => b.classList.remove("selected"))
@@ -125,7 +146,7 @@ filterButtons.forEach(button => {
 })
 
 
-// Filter by cooking time
+//  ------ Filter by cooking time ------ //
 sortButtons.forEach(button => {
   button.addEventListener("click", () => {
     sortButtons.forEach(b => b.classList.remove("selected"))
@@ -149,58 +170,52 @@ sortButtons.forEach(button => {
 })
 
 
-// Get random recipes
-if (randomButton) {
-  randomButton.addEventListener("click", () => {
-    filterButtons.forEach(b => b.classList.remove("selected"))
-    sortButtons.forEach(b => b.classList.remove("selected"))
+//  ------ Get random recipes  ------ //
+randomButton.addEventListener("click", () => {
+  if (allMeals.length === 0) {
+    recipeCard.innerHTML = '<p class="error">No recipe match, sorry 🫣</p>'
+    return
+  }
 
-    const allFilterBtn = Array.from(filterButtons).find(b => b.textContent.trim() === "All")
-    if (allFilterBtn) allFilterBtn.classList.add("selected")
+  filterButtons.forEach(b => b.classList.remove("selected"))
+  sortButtons.forEach(b => b.classList.remove("selected"))
 
-    const allSortBtn = Array.from(sortButtons).find(b => b.textContent.trim().toLowerCase() === "all")
-    if (allSortBtn) allSortBtn.classList.add("selected")
+  randomButton.classList.add("selected")
 
-    fetchData()
-  })
-}
+  const randomMeal = allMeals[Math.floor(Math.random() * allMeals.length)]
+  renderMeals([randomMeal])
+})
 
 
-// Preference dropdown toggle
+//  ------ Preference: dropdown toggle  ------ //
 function toggleDropdown() {
   document.getElementById("dropdownMenu").classList.toggle("show")
 }
 
 
-// Preference selection
+//  ------ Preference: dropdown selection  ------ //
 preferenceOptions.forEach(option => {
   option.addEventListener("click", () => {
-    currentPreference = option.value.toLowerCase()
+    preferenceOptions.forEach(o => o.classList.remove("selected"))
+    option.classList.add("selected")
+    currentPreference = option.dataset.value.toLowerCase()
     const filtered = filterByPreference(allMeals)
     renderMeals(filtered)
-    toggleDropdown()
   })
 })
 
 
-// Close dropdown if clicked outside
-window.onclick = function (event) {
-  if (!event.target.matches('button')) {
-    let dropdowns = document.getElementsByClassName("preferences-content")
-    for (let i = 0; i < dropdowns.length; i++) {
-      let openDropdown = dropdowns[i]
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show')
-      }
-    }
+//  ------ To close dropdown if click anywhere on the page  ------ //
+window.addEventListener('click', e => {
+  if (!e.target.closest('.preferences')) {
+    document.getElementById("dropdownMenu").classList.remove("show")
   }
-}
+})
 
 
-// Initial page load
+//  ------ Initial page load  ------ //
 window.onload = () => {
-  const hasCache = loadFromLocalStorage()
-  if (!hasCache) {
-    fetchData()
-  }
+  fetchData()
 }
+
+
