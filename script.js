@@ -29,7 +29,6 @@ buttonGroups.forEach(group => {
 function loadFromLocalStorage() {
   const storedRecipes = localStorage.getItem("recipes")
   if (storedRecipes) {
-    console.log("Recipes loaded from localStorage")
     allMeals = JSON.parse(storedRecipes)
 
     const filtered = filterByPreference(allMeals)
@@ -58,7 +57,6 @@ const fetchData = () => {
 
     .then(data => {
       allMeals = data.recipes
-      console.log("Fetched recipes:", allMeals)
 
       // saves recipes to localStorage for backup
       localStorage.setItem("recipes", JSON.stringify(allMeals))
@@ -69,16 +67,16 @@ const fetchData = () => {
     })
     // error control + messages
     .catch(error => {
-      console.error('Error fetching recipes:', error)
+
 
       if (error.message === "API limit reached 😑") {
         // backup, loading from local storage
         if (!loadFromLocalStorage()) {
-          recipeCard.innerHTML = '<p class="error">API quota reached and no saved recipes found. Please try again tomorrow 🫡.</p>'
+          recipeCard.innerHTML = '<p class="error">API quota reached and no saved recipes found.. Please try again tomorrow 🫡.</p>'
         }
       } else {
         // something else went wrong 
-        recipeCard.innerHTML = '<p class="error"> Something went wrong- please try again 🫣</p>'
+        recipeCard.innerHTML = '<p class="error"> Something went wrong, please try again 🫣</p>'
       }
     })
 }
